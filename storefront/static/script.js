@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <h2 class="accordion-header" id="heading${room.id}">
             <button class="accordion-button collapsed" type="button" 
                     data-bs-toggle="collapse" data-bs-target="#collapse${room.id}" 
-                    aria-expanded="false" aria-controls="collapse${room.id}">
+                    aria-expanded="false" aria-controls="collapse${room.id}" data-room-id="${room.id}">
               Room ${roomNumber}
             </button>
           </h2>
@@ -423,4 +423,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.querySelectorAll(".room").forEach(room => {
   room.classList.remove("visible");
+});
+
+//highlight rooms when clicked
+const roomsAccordion = document.getElementById('roomsAccordion');
+
+roomsAccordion.addEventListener('shown.bs.collapse', e => {
+  const collapse = e.target;
+  const toggleBtn = roomsAccordion.querySelector(
+    `[aria-controls="${collapse.id}"]`
+  );
+  if (!toggleBtn) return;
+  const roomId = toggleBtn.dataset.roomId;
+  const svgRoom = document.getElementById(roomId);
+  if (svgRoom) svgRoom.classList.add('selected');
+});
+
+roomsAccordion.addEventListener('hidden.bs.collapse', e => {
+  const collapse = e.target;
+  const toggleBtn = roomsAccordion.querySelector(
+    `[aria-controls="${collapse.id}"]`
+  );
+  if (!toggleBtn) return;
+  const roomId = toggleBtn.dataset.roomId;
+  const svgRoom = document.getElementById(roomId);
+  if (svgRoom) svgRoom.classList.remove('selected');
 });
