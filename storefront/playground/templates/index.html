@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Building Availability</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'default.css' %}">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <h1>RoomMate</h1>
+    </div>
+  </header>
+  <main>
+    <!-- Side Panel -->
+    <div class="side-panel" id="side-panel">
+      <button id="toggle-panel">☰</button>
+      <div class="panel-content">
+        <h2>Room Availability</h2>
+        <!-- Accordion with each room as its own item -->
+        <div class="accordion" id="roomsAccordion">
+          <div class="accordion-item">
+              <div class="accordion-body">
+                <p>Select a building to view available rooms.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Map Container -->
+    <div class="map-container">
+      <!-- Zoom and Reset Buttons -->
+      <div class="zoom-controls">
+        <div class="zoom-buttons">
+          <button id="zoom-in">+</button>
+          <button id="zoom-out">-</button>
+        </div>
+        <button id="reset-button">Reset</button>
+      </div>
+      <!-- SVG Map (example paths below; replace with your actual SVG content) -->
+      <svg width="2024" height="1687" viewBox="0 0 2024 1687" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path class="building" id="a" d="M389.5 365.5V0.5H0.5V365.5H389.5Z" stroke="white"/>
+        <path class="building" id="b" d="M2023.5 766V401H1634.5V766H2023.5Z" stroke="white"/>
+        <path class="building" id="c" d="M928.5 1686.5V1321.5H539.5V1686.5H928.5Z" stroke="white"/>
+        <path class="building" id="woodward" d="M605.5 1173H749.5V1136.5H789V931.5L815.5 936.5V852.5L789 862V663.5H1375V599.5H1420V469.5H1375V440H1275V410.5H910V440H802.5V518H758.5C746.386 477.3 732.599 465.248 702 453C668.052 444.469 649.758 447.376 619 472C597.662 498.143 591.5 518 595 557C603.5 609 666.547 624.405 666.5 625.5C666.453 626.595 666.5 663.5 666.5 663.5H569V809.5H547L531 899L547 984.5H569V1136.5H605.5V1173Z" stroke="white"/>
+        <path class="room woodward" id="woodward-105" d="M667 675H584V730.5H667V675Z" stroke="white"/>
+        <path class="room woodward" id="woodward-106" d="M774.5 938H690.5V1120.5H774.5V938Z" stroke="white"/>
+        <path class="room woodward" id="woodward-107" d="M781 675H729V730.5H781V675Z" stroke="white"/>
+        <path class="room woodward" id="woodward-108" d="M1095.5 506V420L1014 420V506H1095.5Z" stroke="white"/>
+        <path class="room woodward" id="woodward-109" d="M1001.5 506V420L921 420V506L1001.5 506Z" stroke="white"/>
+        <path class="room woodward" id="woodward-110" d="M667 745.5H584V801H667V745.5Z" stroke="white"/>
+        <path class="room woodward" id="woodward-111" d="M781 745.5H729V801H781V745.5Z" stroke="white"/>
+      </svg>
+    </div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'script.js' %}"></script>
+  <!-- Room Schedule Modal -->
+  <div class="modal fade" id="scheduleModal" tabindex="-1" aria-labelledby="scheduleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="scheduleModalLabel">Room Schedule</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="scheduleContent">
+          Loading schedule...
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

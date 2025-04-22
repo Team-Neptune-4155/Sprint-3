@@ -1,0 +1,231 @@
+svg path {
+    fill: #00394f;
+    stroke: #00447c;
+    stroke-width: .25;
+    scale: 0.85 ;
+  }
+  
+  svg path:hover {
+    fill: #006284;
+    transition: 0.6s;
+    cursor: pointer;
+  }
+  
+  body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+  
+  header {
+      background-color: #00447c;
+      color: white;
+      padding: 30px 60px;
+      display: flex;
+      align-items: center;
+  }
+  
+  header .logo {
+      display: flex;
+      align-items: center;
+  }
+  
+  header .logo img {
+      height: 50px;
+      margin-right: 10px;
+  }
+  
+  header h1 {
+      margin: 0;
+      font-size: 24px;
+  }
+  
+  main {
+      display: flex;
+      flex: 1;
+      position: relative;
+  }
+  
+  .side-panel {
+      width: 250px;
+      background-color: #f4f4f4;
+      border-right: 1px solid #ccc;
+      transition: transform 0.3s ease;
+      position: relative;
+  }
+
+  .panel-content h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .side-panel.collapsed {
+      transform: translateX(-220px);
+  }
+  
+  .side-panel #toggle-panel {
+      position: absolute;
+      right: -40px;
+      top: 10px;
+      background: #00447c;
+      color: white;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0 5px 5px 0;
+  }
+  
+  .side-panel .panel-content {
+      padding: 20px;
+  }
+  
+  .map-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: margin-left 0.3s ease;
+      overflow: hidden;
+      padding-top: 50px;
+  }
+  
+  .map-container svg {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+  }
+  
+  .side-panel.collapsed + .map-container {
+      margin-left: -220px; 
+  }
+
+  /* Zoom Controls */
+.zoom-controls {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.zoom-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.zoom-controls button {
+  background-color: #00447c;
+  color: white;
+  border: none;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zoom-controls button:hover {
+  background-color: #006284;
+}
+
+#reset-button {
+  width: 100%;
+  display: flex;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.9rem;
+  display: block;
+  height: auto;
+}
+  
+  #room-list {
+      margin-top: 10px;
+  }
+  
+  .room-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+  }
+  
+  .room-item .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 10px;
+  }
+  
+  .room-item .dot.available {
+      background-color: green;
+  }
+  
+  .room-item .dot.unavailable {
+      background-color: red;
+  }
+
+
+  .room {
+    transition: fill 0.3s ease;
+  }
+
+  .room.available {
+    fill: rgb(0, 255, 0);
+  }
+
+  .room.upcoming {
+    fill: orange; 
+  }
+
+  .room.occupied {
+    fill: red;
+  }
+
+
+
+  .room:hover {
+    opacity: 0.7;
+  }
+
+  .room.selected {
+    stroke-width: 4;
+    stroke: white;
+  }
+
+  .room {
+    display: none;
+  }
+
+  .room.visible {
+    display: inline;
+  }
+
+
+  .building {
+    transition: fill 0.3s ease;
+  }
+
+  .building.active {
+    fill: #006284;
+    stroke-width: 4;
+    stroke: black
+  }
