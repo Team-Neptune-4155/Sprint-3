@@ -229,3 +229,8 @@ svg path {
     stroke-width: 4;
     stroke: black
   }
+
+.room--highlighted {
+  stroke: white;
+  stroke-width: 4px;
+}
