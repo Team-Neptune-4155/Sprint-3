@@ -124,28 +124,55 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     var room_Data = [];
-    async function initData() {
-      const resp = await fetch("static/rooms.json");
-      room_Data = await resp.json();
+    initRoomData();
+    var schedule_Data = [];
+    initScheduleData();
+  
+  
+    async function initRoomData() {
+      const response = await fetch("static/rooms.json");
+      var check = await response.json();
+      room_Data = check;
     }
-
+  
+  
+    async function initScheduleData() {
+      const schedResponse = await fetch("static/schedules.json");
+      var check2 = await schedResponse.json();
+      schedule_Data = check2;
+    }
+  
+  
+    // Async function to fetch room data (will be replaced with database call later)
     async function fetchRoomData(buildingId) {
-      await initData();
+  
+  
+      await initRoomData();
+      await initScheduleData();
       const rooms = [];
-      document.querySelectorAll(`.room.${buildingId}`)
-        .forEach(r => {
-          const num = r.id.split("-").pop();
-          rooms.push({
-            id: r.id,
-            number: room_Data.find(x => x[1] == +num)?.[1] || num,
-            status: "Available",
-            capacity: getRoomCapacity(num),
-            type: getRoomType(num),
-            lastCleaned: getLastCleanedDate(num)
-          });
+      document.querySelectorAll(`.room.${buildingId}`).forEach(room => {
+        const roomNumber = room.id.split('-').pop();
+        var currentRoom;
+        for (var i = 0; i < room_Data.length; i++) {
+          if (room_Data[i][1] == roomNumber) {
+            currentRoom = room_Data[i];
+          }
+          
+      }
+      slots = getTimeSlots(106);
+      console.log(slots);
+        rooms.push({
+          id: room.id,
+          number: roomNumber,
+          status: "Available", // Defaults - will come from DB later
+          capacity: currentRoom[3],
+          type: currentRoom[4],
+          details: currentRoom[5]
         });
+      });
       return rooms;
     }
+  
 
     async function updateBuildingInfo(buildingId) {
       const ac = document.getElementById("roomsAccordion");
@@ -175,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <p>Status: ${room.status}</p>
                 <p>Capacity: ${room.capacity}</p>
                 <p>Type: ${room.type}</p>
-                <p>Last cleaned: ${room.lastCleaned}</p>
+                <p>Details: ${room.details}</p>
                 <button class="btn btn-primary schedule-btn" data-room="${num}">Schedule</button>
               </div>
             </div>`;
@@ -207,17 +234,16 @@ document.addEventListener("DOMContentLoaded", () => {
       modal.show();
     }
 
-    function getRoomCapacity(n) {
-      const caps = { '105':30,'106':45,'107':20,'108':60,'109':25,'110':40,'111':35 };
-      return caps[n]||25;
-    }
-    function getRoomType(n) {
-      const types = {'105':'Classroom','106':'Lecture Hall','107':'Lab','108':'Conference Room','109':'Seminar Room','110':'Study Room','111':'Meeting Room'};
-      return types[n]||'Room';
-    }
-    function getLastCleanedDate(n) {
-      const dates = {'105':'Today','106':'Yesterday','107':'2 days ago','108':'This week','109':'Today','110':'Yesterday','111':'This week'};
-      return dates[n]||'Recently';
+    function getTimeSlots(roomNumber) {
+      var timeSlots = [];
+      for (var i = 0; i < schedule_Data.length; i++) {
+       
+        if (schedule_Data[i][1] == roomNumber) {
+          timeSlots.push(schedule_Data[i]);
+        }
+       
+      }
+      return timeSlots
     }
 
     function setupResetButton() {
