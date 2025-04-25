@@ -403,13 +403,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Sample room color availability - replace with your data
     const simulatedData = [
-      { room_id: 'woodward-105', status: 'available' },
-      { room_id: 'woodward-106', status: 'occupied' },
-      { room_id: 'woodward-107', status: 'upcoming' },
-      { room_id: 'woodward-108', status: 'available' },
-      { room_id: 'woodward-109', status: 'occupied'},
-      { room_id: 'woodward-110', status: 'occupied'},
-      { room_id: 'woodward-111', status: 'upcoming'}
+      { room_id: 'woodward-106', status: 'available' },
+      { room_id: 'woodward-120', status: 'occupied' },
+      { room_id: 'woodward-125', status: 'upcoming' },
+      { room_id: 'woodward-130', status: 'available' },
+      { room_id: 'woodward-135', status: 'occupied'},
+      { room_id: 'woodward-150', status: 'occupied'},
+      { room_id: 'woodward-155', status: 'upcoming'}
     ];
   
     simulatedData.forEach(room => {
