@@ -203,7 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <p>Capacity: ${room.capacity}</p>
                 <p>Type: ${room.type}</p>
                 <p>Details: ${room.details}</p>
-                <button class="btn btn-primary schedule-btn" data-room="${num}">Schedule</button>
+                <button class="btn btn-success schedule-btn" data-room="${num}">Schedule</button>
               </div>
             </div>`;
           ac.appendChild(item);
