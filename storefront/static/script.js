@@ -159,25 +159,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   var room_Data = [];
-  initData();
+  initRoomData();
+  var schedule_Data = [];
+  initScheduleData();
 
-  async function initData() {
+  async function initRoomData() {
     const response = await fetch("static/rooms.json");
     var check = await response.json();
     room_Data = check;
   }
 
+  async function initScheduleData() {
+    const schedResponse = await fetch("static/schedules.json");
+    var check2 = await schedResponse.json();
+    schedule_Data = check2;
+  }
+
   // Async function to fetch room data (will be replaced with database call later)
   async function fetchRoomData(buildingId) {
 
-    await initData();
-
+    await initRoomData();
+    console.log(room_Data);
+    await initScheduleData();
     const rooms = [];
     document.querySelectorAll(`.room.${buildingId}`).forEach(room => {
       const roomNumber = room.id.split('-').pop();
+      console.log = room_Data.filter(row => row[0] === "WW155")
       rooms.push({
         id: room.id,
-        number: room_Data[0][1],
+        number: roomNumber,
         status: "Available", // Defaults - will come from DB later
         capacity: getRoomCapacity(roomNumber),
         type: getRoomType(roomNumber),
