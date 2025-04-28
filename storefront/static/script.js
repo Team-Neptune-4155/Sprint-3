@@ -144,7 +144,6 @@ document.addEventListener("DOMContentLoaded", () => {
       updateRoomStatuses();
     }
     
-    const now = new Date();
   
     // Async function to fetch room data (will be replaced with database call later)
     async function fetchRoomData(buildingId) {
@@ -233,12 +232,18 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("scheduleContent").innerHTML = `
         <ul id="slotList"></ul>`;
         let list = document.getElementById("slotList");
-        for (i = 0; i < numSlots.length; ++i) {
+        if (numSlots.length == 0) {
+          let p = document.createElement('p');
+          p.innerText = 'No scheduled classes'
+          list.appendChild(p);
+        } else {
+          for (i = 0; i < numSlots.length; ++i) {
             let li = document.createElement('li');
             var slotStart = formatSchedString(numSlots[i][5]);
             var slotEnd = formatSchedString(numSlots[i][6]);
             li.innerText = numSlots[i][4] +', '+ slotStart + ' - ' + slotEnd + ', ' + numSlots[i][2] +': ' + numSlots[i][3];
             list.appendChild(li);
+          }
         }
       modal.show();
     }
