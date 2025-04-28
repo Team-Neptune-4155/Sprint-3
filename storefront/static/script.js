@@ -143,7 +143,8 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log(schedule_Data);
       updateRoomStatuses();
     }
-  
+    
+    const now = new Date();
   
     // Async function to fetch room data (will be replaced with database call later)
     async function fetchRoomData(buildingId) {
@@ -161,12 +162,11 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           
       }
-      slots = getTimeSlots(106);
-      console.log(slots);
+      thisStatus = getUpcoming(roomNumber);
         rooms.push({
           id: room.id,
           number: roomNumber,
-          status: "Available", // Defaults - will come from DB later
+          status: thisStatus, // Defaults - will come from DB later
           capacity: currentRoom[3],
           type: currentRoom[4],
           details: currentRoom[5]
@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ac.innerHTML = "";
         rooms.forEach(room => {
           const num = room.id.split("-").pop();
-          var numSlots = getTimeSlots(num);
+          var numSlots = getTimeSlotsByNum(num);
           const item = document.createElement("div");
           item.className = "accordion-item";
           item.innerHTML = `
@@ -222,6 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
       } catch (err) {
+        console.log(err);
         ac.innerHTML = `<div class="accordion-item"><div class="accordion-body"><p>Error loading rooms</p></div></div>`;
       }
     }
@@ -234,13 +235,68 @@ document.addEventListener("DOMContentLoaded", () => {
         let list = document.getElementById("slotList");
         for (i = 0; i < numSlots.length; ++i) {
             let li = document.createElement('li');
-            li.innerText = numSlots[i][4] +', '+ numSlots[i][5] + ' - ' + numSlots[i][6] + ', ' + numSlots[i][2] +': ' + numSlots[i][3];
+            var slotStart = formatSchedString(numSlots[i][5]);
+            var slotEnd = formatSchedString(numSlots[i][6]);
+            li.innerText = numSlots[i][4] +', '+ slotStart + ' - ' + slotEnd + ', ' + numSlots[i][2] +': ' + numSlots[i][3];
             list.appendChild(li);
         }
       modal.show();
     }
 
-    function getTimeSlots(roomNumber) {
+    function getUpcoming(roomNumber) {
+      slots = getTimeSlotsByNum(roomNumber);
+      switch (now.getDay()) {
+        case 0:
+          dayOfWeek = "Sunday";
+          break;
+        case 1:
+          dayOfWeek = "Monday";
+          break;
+        case 2:
+          dayOfWeek = "Tuesday";
+          break;
+        case 3:
+          dayOfWeek = "Wednesday";
+          break;
+        case 4:
+          dayOfWeek = "Thursday";
+          break;
+        case 5:
+          dayOfWeek = "Friday";
+          break;
+        case 6:
+          dayOfWeek = "Saturday";
+      }
+     
+      dayTimeSlots = getTimeSlotsByDay(dayOfWeek, slots)
+      var timeNow = formatCurrentTime();
+      var status = "Available";
+      for (var i = 0; i < dayTimeSlots.length; i++) {
+       
+        var [start, end] = formatSlotTime(dayTimeSlots[i]);
+        console.log('status: ' + status);
+        console.log('current: ' + timeNow + ', start: ' + start + ', end: ' + end);
+        //before current start and end
+        if (start - timeNow > 0 && end - timeNow > 0) {
+          if (start - timeNow <= 15) {
+            status = "Upcoming";
+          } else {
+            break
+          }
+         
+        }
+        //between current start and end
+        else if (start - timeNow < 0 && end - timeNow > 0) {
+          status = "Occupied";
+        }
+        //after current start and end
+      }
+      return status
+     
+    }
+
+
+    function getTimeSlotsByNum(roomNumber) {
       var timeSlots = [];
       for (var i = 0; i < schedule_Data.length; i++) {
        
@@ -250,6 +306,57 @@ document.addEventListener("DOMContentLoaded", () => {
        
       }
       return timeSlots
+    }
+
+
+    function getTimeSlotsByDay(day, slots) {
+      var dayTimeSlots = [];
+      for (var i = 0; i < slots.length; i++) {
+        if (slots[i][4] == day) {
+          dayTimeSlots.push(slots[i]);
+        }
+      }
+      return dayTimeSlots
+    }
+
+
+    function formatCurrentTime() {
+      var currentTime;
+      currentTime = (now.getHours() * 60) + now.getMinutes();
+      return currentTime;
+    }
+
+
+    function formatSlotTime(slot) {
+      var formattedStart;
+      var formattedEnd;
+      if (slot[5].length == 7) {
+        formattedStart = Number((slot[5].slice(0, 1))*60 + Number(slot[5].slice(2, 4)));
+      } else {
+        formattedStart = Number((slot[5].slice(0, 2))*60 + Number(slot[5].slice(3, 5)));
+      }
+
+
+      if (slot[6].length == 7) {
+        formattedEnd = Number((slot[6].slice(0, 1))*60 + Number(slot[6].slice(2, 4)));
+      } else {
+        formattedEnd = Number((slot[6].slice(0, 2))*60 + Number(slot[6].slice(3, 5)));
+      }
+      return [formattedStart, formattedEnd];
+    }
+
+
+    function formatSchedString(thisSlot) {
+      if (thisSlot.length == 8 && Number(thisSlot.slice(0,2)) > 12) {
+        var hour = Number(thisSlot.slice(0,2)) - 12;
+        
+        thisSlot = hour.toString() + thisSlot.slice(-6) + ' PM'
+      } else if (Number(thisSlot.slice(0,2)) == 12){
+         thisSlot = thisSlot + ' PM'
+      } else {
+        thisSlot = thisSlot + ' AM'
+      }
+      return thisSlot;
     }
 
     function setupResetButton() {
@@ -267,7 +374,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function updateRoomStatuses() {
 
-      const now = new Date();
+      
       const currentDay = now.toLocaleDateString('en-US', { weekday: 'long' });
       const currentTime = now.toTimeString().split(' ')[0];
   
