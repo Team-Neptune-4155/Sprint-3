@@ -177,6 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
 
     async function updateBuildingInfo(buildingId) {
+      
       const ac = document.getElementById("roomsAccordion");
       ac.innerHTML = `<div class="accordion-item"><div class="accordion-body"><p>Loading rooms...</p></div></div>`;
       try {
@@ -188,6 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ac.innerHTML = "";
         rooms.forEach(room => {
           const num = room.id.split("-").pop();
+          var numSlots = getTimeSlots(num);
           const item = document.createElement("div");
           item.className = "accordion-item";
           item.innerHTML = `
@@ -210,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>`;
           ac.appendChild(item);
           item.querySelector(".schedule-btn")
-            .addEventListener("click", () => showScheduleModal(num));
+            .addEventListener("click", () => showScheduleModal(num, numSlots));
           document.getElementById(room.id)
             ?.addEventListener("click", () => {
               openSidePanel();
@@ -224,15 +226,17 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    function showScheduleModal(roomNumber) {
+    function showScheduleModal(roomNumber, numSlots) {
       const modal = new bootstrap.Modal(document.getElementById("scheduleModal"));
       document.getElementById("scheduleModalLabel").textContent = `Schedule for Room ${roomNumber}`;
       document.getElementById("scheduleContent").innerHTML = `
-        <ul>
-          <li>9:00 AM - 10:30 AM: Math 101</li>
-          <li>11:00 AM - 12:30 PM: History 201</li>
-          <li>2:00 PM - 3:30 PM: CS Seminar</li>
-        </ul>`;
+        <ul id="slotList"></ul>`;
+        let list = document.getElementById("slotList");
+        for (i = 0; i < numSlots.length; ++i) {
+            let li = document.createElement('li');
+            li.innerText = numSlots[i][4] +', '+ numSlots[i][5] + ' - ' + numSlots[i][6] + ', ' + numSlots[i][2] +': ' + numSlots[i][3];
+            list.appendChild(li);
+        }
       modal.show();
     }
 
