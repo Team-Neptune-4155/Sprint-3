@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
           document.querySelectorAll(".room").forEach(r => r.classList.remove("selected"));
           room.classList.add("selected");
           openSidePanel();
-          updateRoomInfo(room);
+          
         });
       });
     }
@@ -168,8 +168,8 @@ document.addEventListener("DOMContentLoaded", () => {
           number: roomNumber,
           status: thisStatus, // Defaults - will come from DB later
           capacity: currentRoom[3],
-          type: currentRoom[4],
-          details: currentRoom[5]
+          type: currentRoom[4]
+
         });
       });
       return rooms;
@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <p>Status: ${room.status}</p>
                 <p>Capacity: ${room.capacity}</p>
                 <p>Type: ${room.type}</p>
-                <p>Details: ${room.details}</p>
+
                 <button class="btn btn-success schedule-btn" data-room="${num}">Schedule</button>
               </div>
             </div>`;
@@ -279,7 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
         //before current start and end
         if (start - timeNow > 0 && end - timeNow > 0) {
           if (start - timeNow <= 15) {
-            status = "Upcoming";
+            status = "Class Incoming";
           } else {
             break
           }
