@@ -127,6 +127,9 @@ document.addEventListener("DOMContentLoaded", () => {
     initRoomData();
     var schedule_Data = [];
     initScheduleData();
+    const currentDate = new Date("April 21, 2025 9:00:00");;
+
+    
   
   
     async function initRoomData() {
@@ -161,8 +164,8 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           
       }
-      slots = getTimeSlots(106);
-      console.log(slots);
+      
+      getUpcoming(roomNumber);
         rooms.push({
           id: room.id,
           number: roomNumber,
@@ -220,6 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
       } catch (err) {
+        console.log(err);
         ac.innerHTML = `<div class="accordion-item"><div class="accordion-body"><p>Error loading rooms</p></div></div>`;
       }
     }
@@ -236,7 +240,59 @@ document.addEventListener("DOMContentLoaded", () => {
       modal.show();
     }
 
-    function getTimeSlots(roomNumber) {
+    function getUpcoming(roomNumber) {
+      slots = getTimeSlotsByNum(roomNumber);
+      switch (currentDate.getDay()) {
+        case 0:
+          dayOfWeek = "Sunday";
+          break;
+        case 1:
+          dayOfWeek = "Monday";
+          break;
+        case 2:
+          dayOfWeek = "Tuesday";
+          break;
+        case 3:
+          dayOfWeek = "Wednesday";
+          break;
+        case 4:
+          dayOfWeek = "Thursday";
+          break;
+        case 5:
+          dayOfWeek = "Friday";
+          break;
+        case 6:
+          dayOfWeek = "Saturday";
+      }
+      
+      dayTimeSlots = getTimeSlotsByDay(dayOfWeek, slots)
+      var timeNow = formatCurrentTime();
+      var status = "Available";
+      for (var i = 0; i < dayTimeSlots.length; i++) {
+       
+        var [start, end] = formatSlotTime(dayTimeSlots[i]);
+        console.log('status: ' + status);
+        console.log('current: ' + timeNow + ', start: ' + start + ', end: ' + end);
+        //before current start and end
+        if (start - timeNow > 0 && end - timeNow > 0) {
+          if (start - timeNow <= 15) {
+            status = "Upcoming";
+          } else {
+            break
+          }
+          
+        }
+        //between current start and end 
+        else if (start - timeNow < 0 && end - timeNow > 0) {
+          console.log('3');
+        }
+        //after current start and end 
+      }
+      console.log('status: ' + status);
+      
+    }
+
+    function getTimeSlotsByNum(roomNumber) {
       var timeSlots = [];
       for (var i = 0; i < schedule_Data.length; i++) {
        
@@ -246,6 +302,39 @@ document.addEventListener("DOMContentLoaded", () => {
        
       }
       return timeSlots
+    }
+
+    function getTimeSlotsByDay(day, slots) {
+      var dayTimeSlots = [];
+      for (var i = 0; i < slots.length; i++) {
+        if (slots[i][4] == day) {
+          dayTimeSlots.push(slots[i]);
+        }
+      }
+      return dayTimeSlots
+    }
+
+    function formatCurrentTime() {
+      var currentTime; 
+      currentTime = (currentDate.getHours() * 60) + currentDate.getMinutes();
+      return currentTime;
+    }
+
+    function formatSlotTime(slot) {
+      var formattedStart;
+      var formattedEnd;
+      if (slot[5].length == 7) {
+        formattedStart = Number((slot[5].slice(0, 1))*60 + Number(slot[5].slice(2, 4)));
+      } else {
+        formattedStart = Number((slot[5].slice(0, 2))*60 + Number(slot[5].slice(3, 5)));
+      }
+
+      if (slot[6].length == 7) {
+        formattedEnd = Number((slot[6].slice(0, 1))*60 + Number(slot[6].slice(2, 4)));
+      } else {
+        formattedEnd = Number((slot[6].slice(0, 2))*60 + Number(slot[6].slice(3, 5)));
+      }
+      return [formattedStart, formattedEnd];
     }
 
     function setupResetButton() {
