@@ -140,6 +140,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const schedResponse = await fetch("static/schedules.json");
       var check2 = await schedResponse.json();
       schedule_Data = check2;
+      console.log(schedule_Data);
+      updateRoomStatuses();
     }
   
   
@@ -259,21 +261,49 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    [
-      { room_id: 'woodward-106', status: 'available' },
-      { room_id: 'woodward-120', status: 'occupied' },
-      { room_id: 'woodward-125', status: 'upcoming' },
-      { room_id: 'woodward-130', status: 'available' },
-      { room_id: 'woodward-135', status: 'occupied'},
-      { room_id: 'woodward-150', status: 'occupied'},
-      { room_id: 'woodward-155', status: 'upcoming'}
-    ].forEach(r => {
-      const el = document.getElementById(r.room_id);
-      if (el) {
-        el.classList.remove('available','occupied','upcoming');
-        el.classList.add(r.status);
-      }
-    });
+    async function updateRoomStatuses() {
+
+      const now = new Date();
+      const currentDay = now.toLocaleDateString('en-US', { weekday: 'long' });
+      const currentTime = now.toTimeString().split(' ')[0];
+  
+      const roomStatusMap = {};
+  
+      schedule_Data.forEach(event => {
+          const [eventId, roomNumber, className, instructorName, dayOfWeek, startTime, endTime] = event;
+          const roomId = `woodward-${roomNumber}`;
+  
+          if (dayOfWeek !== currentDay) return;
+  
+          const startDate = new Date(`${now.toDateString()} ${startTime}`);
+          const endDate = new Date(`${now.toDateString()} ${endTime}`);
+  
+          if (now >= startDate && now <= endDate) {
+              roomStatusMap[roomId] = 'occupied';
+          }
+          else {
+              const timeUntilStart = (startDate - now) / 60000;
+              if (timeUntilStart > 0 && timeUntilStart <= 15) {
+                  roomStatusMap[roomId] = 'upcoming';
+              } else if (!roomStatusMap[roomId]) {
+                  roomStatusMap[roomId] = 'available';
+              }
+          }
+      });
+  
+      console.log(roomStatusMap);  // Log the room status map to check if the statuses are being assigned correctly.
+  
+      document.querySelectorAll('.room').forEach(el => {
+          const id = el.id;
+          el.classList.remove('available', 'occupied', 'upcoming');
+          
+          if (roomStatusMap[id]) {
+              el.classList.add(roomStatusMap[id]);
+          } else {
+              el.classList.add('available');
+          }
+      });
+    }
   }
 
   const form = document.getElementById("contactForm");
