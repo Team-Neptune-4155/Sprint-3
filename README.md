@@ -29,6 +29,8 @@ RoomMate is a Django-based web application that provides an interactive SVG map 
 - Python 3.8+
 - pip
 - Git
+- MySQL Server
+- MySQL Workbench
 
 ## Installation
 
@@ -48,6 +50,7 @@ venv\Scripts\activate # Windows
 3. Install dependencies:
 ```
 pip install Django
+python -m pip install mysql-connector-python 
 ```
 
 4. Apply database migrations (no existing models by default):
