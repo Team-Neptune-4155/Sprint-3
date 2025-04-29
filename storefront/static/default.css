@@ -200,10 +200,6 @@ svg path {
     fill: red;
   }
 
-  text.building, text.room {
-    fill: black !important;
-  }
-
   /* color key */
   .color-key {
     position: absolute;
