@@ -191,6 +191,8 @@ document.addEventListener("DOMContentLoaded", () => {
           const num = room.id.split("-").pop();
           var numSlots = getTimeSlotsByNum(num);
           const item = document.createElement("div");
+          const roomStatus = getRoomStatus(room.id)
+          const colorClass = getStatusDotClass(roomStatus);
           item.className = "accordion-item";
           item.innerHTML = `
             <h2 class="accordion-header" id="heading${room.id}">
@@ -198,7 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
                data-bs-toggle="collapse" data-bs-target="#collapse${room.id}"
                aria-expanded="false" aria-controls="collapse${room.id}"
                data-room-id="${room.id}">
-               Room ${num}
+               <span class="status-dot ${colorClass}"></span> Room ${num}
              </button>
             </h2>
             <div id="collapse${room.id}" class="accordion-collapse collapse" aria-labelledby="heading${room.id}">
@@ -378,6 +380,25 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
+    function getRoomStatus(roomId) {
+      const currentDay = now.toLocaleDateString('en-US', { weekday: 'long' });
+      const currentTimeMinutes = (now.getHours() * 60) + now.getMinutes();
+      const slots = getTimeSlotsByNum(roomId.split('-')[1]);
+      const daySlots = getTimeSlotsByDay(currentDay, slots);
+    
+      for (let slot of daySlots) {
+        const [start, end] = formatSlotTime(slot);
+        if (currentTimeMinutes >= start && currentTimeMinutes <= end) {
+          return 'occupied';
+        }
+        const timeUntilStart = start - currentTimeMinutes;
+        if (timeUntilStart > 0 && timeUntilStart <= 15) {
+          return 'upcoming';
+        }
+      }
+      return 'available';
+    }
+
     async function updateRoomStatuses() {
 
       
@@ -412,14 +433,33 @@ document.addEventListener("DOMContentLoaded", () => {
   
       document.querySelectorAll('.room').forEach(el => {
           const id = el.id;
+          const status = getRoomStatus(id);
           el.classList.remove('available', 'occupied', 'upcoming');
           
-          if (roomStatusMap[id]) {
-              el.classList.add(roomStatusMap[id]);
+          if (status) {
+              el.classList.add(status);
           } else {
               el.classList.add('available');
           }
+
+          const dot = el.querySelector('.status-dot');
+          if (dot) {
+            dot.className = `status-dot ${getStatusDotClass(status)}`;
+          }
       });
+    }
+
+    function getStatusDotClass(status) {
+      switch (status) {
+        case 'available':
+          return 'dot-available';
+        case 'upcoming':
+          return 'dot-upcoming';
+        case 'occupied':
+          return 'dot-occupied';
+        default:
+          return 'dot-available';
+      }
     }
   }
 
