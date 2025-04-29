@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
       updateRoomStatuses();
     }
     
-    const now = new Date("April 21, 2025 9:20:00");
+    const now = new Date();
   
     // Async function to fetch room data (will be replaced with database call later)
     async function fetchRoomData(buildingId) {
