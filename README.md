@@ -29,8 +29,7 @@ RoomMate is a Django-based web application that provides an interactive SVG map 
 - Python 3.8+
 - pip
 - Git
-- MySQL Server
-- MySQL Workbench
+- MySQL Server/MySQL Workbench: Requires a MySQL connection with user: "root", password "32011509", and a database named 'roommatedb'
 
 ## Installation
 
